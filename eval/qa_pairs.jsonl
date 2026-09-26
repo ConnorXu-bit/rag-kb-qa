@@ -1,0 +1,42 @@
+{"id": "q01", "question": "默认的 chunk_size 和 overlap 分别是多少？", "source": "chunking.md", "heading": "文档切分 > 切分粒度", "anchor": "chunk_size 是 500", "tag": "lexical"}
+{"id": "q02", "question": "为什么每个片段都要带上标题路径？", "source": "chunking.md", "heading": "文档切分 > 标题路径", "anchor": "离开标题就看不懂", "tag": "semantic"}
+{"id": "q03", "question": "重叠的那一段是从哪里取的？", "source": "chunking.md", "heading": "文档切分 > 重叠窗口", "anchor": "上一块的尾部", "tag": "lexical"}
+{"id": "q04", "question": "overlap 的合法取值范围是什么？", "source": "chunking.md", "heading": "文档切分 > 参数校验", "anchor": "0 <= overlap < chunk_size", "tag": "lexical"}
+{"id": "q05", "question": "overlap 大于等于 chunk_size 会出什么问题？", "source": "chunking.md", "heading": "文档切分 > 参数校验", "anchor": "块越滚越大", "tag": "semantic"}
+{"id": "q06", "question": "向量检索的相似度下限是多少？", "source": "retrieval.md", "heading": "混合检索 > 向量检索", "anchor": "相似度下限是 0.15", "tag": "lexical"}
+{"id": "q07", "question": "哪几类词用 BM25 检索最准？", "source": "retrieval.md", "heading": "混合检索 > BM25 关键词检索", "anchor": "型号、代码标识符、专有名词", "tag": "lexical"}
+{"id": "q08", "question": "中文是怎么分词的，为什么不引入 jieba？", "source": "retrieval.md", "heading": "混合检索 > BM25 关键词检索 > 中文分词策略", "anchor": "二元切分", "tag": "semantic"}
+{"id": "q09", "question": "RRF 里的 k 默认取多少？", "source": "retrieval.md", "heading": "混合检索 > RRF 融合", "anchor": "k 默认取 60", "tag": "lexical"}
+{"id": "q10", "question": "两路都排第一的片段，融合分数是多少？", "source": "retrieval.md", "heading": "混合检索 > RRF 融合", "anchor": "2/61", "tag": "lexical"}
+{"id": "q11", "question": "为什么融合只看名次，不做加权相加？", "source": "retrieval.md", "heading": "混合检索 > RRF 融合 > 为什么只融合名次", "anchor": "无上界的正数", "tag": "semantic"}
+{"id": "q12", "question": "融合之后的分数能不能当相关性阈值用？", "source": "retrieval.md", "heading": "混合检索 > RRF 融合 > 融合分数怎么读", "anchor": "不能当相关性阈值用", "tag": "semantic"}
+{"id": "q13", "question": "检索结果为空时会调用模型吗？", "source": "generation.md", "heading": "生成与引用 > 无命中兜底 > 为什么命中为空时不调用模型", "anchor": "一次模型调用都不发", "tag": "semantic"}
+{"id": "q14", "question": "知识库没有相关内容时，返回的话术是什么？", "source": "generation.md", "heading": "生成与引用 > 无命中兜底 > 为什么命中为空时不调用模型", "anchor": "知识库中没有找到相关内容", "tag": "lexical"}
+{"id": "q15", "question": "命中为空时不调用模型的第一个理由是什么？", "source": "generation.md", "heading": "生成与引用 > 无命中兜底 > 为什么命中为空时不调用模型", "anchor": "花钱买幻觉", "tag": "semantic"}
+{"id": "q16", "question": "sources 里除了文件名和分数，还给了什么？", "source": "generation.md", "heading": "生成与引用 > 引用编号", "anchor": "正文前 80 字预览", "tag": "lexical"}
+{"id": "q17", "question": "怎么确认服务活着、知识库里有没有内容？", "source": "api.md", "heading": "HTTP 接口 > GET /health", "anchor": "当前库存的片段数", "tag": "semantic"}
+{"id": "q18", "question": "同一份文档重复导入会发生什么？", "source": "api.md", "heading": "HTTP 接口 > POST /ingest", "anchor": "保证幂等", "tag": "semantic"}
+{"id": "q19", "question": "什么情况下 used_llm 会是 false？", "source": "api.md", "heading": "HTTP 接口 > POST /query", "anchor": "used_llm 是布尔值", "tag": "semantic"}
+{"id": "q20", "question": "请求参数不合法会返回什么状态码？", "source": "api.md", "heading": "HTTP 接口 > 参数校验", "anchor": "422", "tag": "lexical"}
+{"id": "q21", "question": "入库接口返回的 chunks 代表什么？", "source": "api.md", "heading": "HTTP 接口 > POST /ingest", "anchor": "这次切出来的片段数", "tag": "lexical"}
+{"id": "q22", "question": "向量存在哪里？检索时怎么算相似度？", "source": "architecture.md", "heading": "系统架构 > 分层与职责 > 数据层", "anchor": "BLOB 字段", "tag": "lexical"}
+{"id": "q23", "question": "三个检索器共用的接口长什么样？", "source": "architecture.md", "heading": "系统架构 > 分层与职责 > 检索层", "anchor": "search(question, top_k)", "tag": "lexical"}
+{"id": "q24", "question": "接口层具体负责哪些工作？", "source": "architecture.md", "heading": "系统架构 > 分层与职责 > 接口层", "anchor": "只做参数校验和序列化", "tag": "semantic"}
+{"id": "q25", "question": "一次提问里，两路检索的结果在哪一步合并？", "source": "architecture.md", "heading": "系统架构 > 一次提问的完整数据流", "anchor": "RRF 把两路名次融合", "tag": "semantic"}
+{"id": "q26", "question": "数据量涨上去之后，存储打算换成什么？", "source": "architecture.md", "heading": "系统架构 > 为什么不做向量数据库", "anchor": "pgvector", "tag": "lexical"}
+{"id": "q27", "question": "测试替身是怎么注入到代码里的？", "source": "testing.md", "heading": "测试策略 > 依赖注入与测试替身", "anchor": "构造器注入", "tag": "lexical"}
+{"id": "q28", "question": "FakeEmbedder 能用来评估语义召回吗？", "source": "testing.md", "heading": "测试策略 > FakeEmbedder 的边界", "anchor": "验证不了真实语义召回", "tag": "semantic"}
+{"id": "q29", "question": "词袋模型下，两个意思相同但用词不同的句子相似度可能是多少？", "source": "testing.md", "heading": "测试策略 > FakeEmbedder 的边界", "anchor": "相似度可能是 0", "tag": "semantic"}
+{"id": "q30", "question": "CI 在哪些 Python 版本上运行？", "source": "testing.md", "heading": "测试策略 > 覆盖了哪些边界", "anchor": "3.10 / 3.12 / 3.14", "tag": "lexical"}
+{"id": "q31", "question": "chunks 表在 source 上建索引是为了什么？", "source": "store.md", "heading": "向量存储 > 表结构", "anchor": "删除某个来源时不用全表扫", "tag": "semantic"}
+{"id": "q32", "question": "为什么写入和查询的向量都要先归一化？", "source": "store.md", "heading": "向量存储 > 归一化", "anchor": "点积就等于余弦相似度", "tag": "semantic"}
+{"id": "q33", "question": "查询向量和库内维度对不上，通常是什么原因？", "source": "store.md", "heading": "向量存储 > 维度校验", "anchor": "换了 embedding 模型但没重建索引", "tag": "semantic"}
+{"id": "q34", "question": "FakeEmbedder 的默认维度和生产装配用的维度分别是多少？", "source": "embeddings.md", "heading": "向量化 > 维度参数", "anchor": "默认 64，生产装配用 512", "tag": "lexical"}
+{"id": "q35", "question": "为什么词袋向量验证不了语义召回？", "source": "embeddings.md", "heading": "向量化 > 局限性", "anchor": "意思相同但用词不同的两句话，相似度可能是 0", "tag": "semantic"}
+{"id": "q36", "question": "想换成国产模型服务，需要改什么？", "source": "embeddings.md", "heading": "向量化 > OpenAI 兼容实现", "anchor": "换个 base_url 就能用", "tag": "lexical"}
+{"id": "q37", "question": "目录导入为什么要先按路径排序？", "source": "ingest.md", "heading": "入库流程 > 顺序可复现", "anchor": "评估结果才可复现", "tag": "semantic"}
+{"id": "q38", "question": "为什么要把一篇文档的所有片段一次性交给向量化？", "source": "ingest.md", "heading": "入库流程 > 批量向量化", "anchor": "按批计费、按批限速", "tag": "semantic"}
+{"id": "q39", "question": "FakeLLM 的台词用完之后会怎样？", "source": "llm.md", "heading": "模型客户端 > 剧本耗尽之后", "anchor": "弹到最后一条就一直返回它", "tag": "lexical"}
+{"id": "q40", "question": "为什么内部接口选择抛异常而不是返回 None？", "source": "errors.md", "heading": "错误与边界 > 为什么不返回 None", "anchor": "None 会被一路传下去", "tag": "semantic"}
+{"id": "q41", "question": "为什么当前版本不做多轮对话？", "source": "design-decisions.md", "heading": "设计取舍 > 为什么不做多轮对话", "anchor": "先让检索和生成的链路可测、可评估", "tag": "semantic"}
+{"id": "q42", "question": "min_score 取 0.15 的依据是什么？", "source": "roadmap.md", "heading": "已知不足与下一步 > 阈值待调参", "anchor": "是从经验来的，没有数据支撑", "tag": "semantic"}
