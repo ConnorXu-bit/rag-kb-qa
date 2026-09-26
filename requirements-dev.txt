@@ -1,0 +1,8 @@
+-r requirements.txt
+
+# 测试依赖
+pytest>=8.0
+httpx>=0.27
+
+# 接真实模型时才用得到：OpenAIEmbedder 与 OpenAIChat 都走 OpenAI 兼容接口
+openai>=1.0.0

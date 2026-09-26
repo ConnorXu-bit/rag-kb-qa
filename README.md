@@ -24,8 +24,9 @@
 
 ## 快速开始
 
-pip3 install fastapi uvicorn pydantic numpy pytest httpx
+pip3 install -r requirements-dev.txt
 python3 -m pytest -q
+python3 -m eval.run_eval --verbose
 python3 -m uvicorn app.main:app --reload
 
 ## 接口
@@ -89,3 +90,4 @@ python3 -m eval.run_eval --embedder openai  # 换真实向量（需要 OPENAI_AP
 - 不联网不花钱：Embedder、LLM、服务全部通过构造器注入替换成假实现。
 - 接口层用 create_app(service) 注入，业务代码一行不改，测的是真实代码路径。
 - 覆盖切分边界与参数校验、向量维度校验、RRF 融合去重、无命中兜底、HTTP 参数校验。
+- 现有 63 个用例；CI 在 Python 3.10 / 3.12 / 3.14 上跑 pytest，并额外跑一遍检索评估——标注写错会让 CI 直接变红。
