@@ -55,7 +55,7 @@ python3 -m eval.run_eval --sweep            # 扫描切分参数
 python3 -m eval.run_eval --embedder openai  # 换真实向量（需要 OPENAI_API_KEY）
 ```
 
-当前结果（14 篇文档 / 102 个片段 / 42 条标注 / k=5，见 `eval/report.md`）：
+当前结果（14 篇文档 / 103 个片段 / 42 条标注 / k=5，见 `eval/report.md`）：
 
 | 检索通道 | Recall@5 | Hit@1 | MRR |
 | --- | --- | --- | --- |
