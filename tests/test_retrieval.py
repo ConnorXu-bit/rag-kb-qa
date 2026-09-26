@@ -146,3 +146,53 @@ def test_hybrid_retriever_survives_one_empty_channel():
 
     assert len(hits) == 1
     assert "SETNX" in hits[0].text
+
+
+class RecordingRetriever:
+    """记录每次被要求返回多少条，用来验证候选池是否真的扩大了。"""
+
+    def __init__(self, hits):
+        self.hits = list(hits)
+        self.requested: list[int] = []
+
+    def search(self, question, top_k):
+        self.requested.append(top_k)
+        return self.hits[:top_k]
+
+
+def make_hits(prefix: str, count: int) -> list[Hit]:
+    return [
+        Hit(source=f"{prefix}.md", heading=prefix, ordinal=index, text=f"{prefix}{index}", score=1.0)
+        for index in range(count)
+    ]
+
+
+def test_hybrid_retriever_expands_candidate_pool_before_fusion():
+    first = RecordingRetriever(make_hits("a", 10))
+    second = RecordingRetriever(make_hits("b", 10))
+
+    HybridRetriever([first, second], candidate_pool=3).search("问题", top_k=2)
+
+    assert first.requested == [6]
+    assert second.requested == [6]
+
+
+def test_hybrid_retriever_rejects_non_positive_candidate_pool():
+    with pytest.raises(ValueError):
+        HybridRetriever([RecordingRetriever([])], candidate_pool=0)
+
+
+def test_candidate_pool_rescues_a_hit_both_channels_ranked_low():
+    """目标在两个通道里都排在尾部：不扩池会在融合前被截掉，扩池才能捞回来。"""
+    target = Hit(source="g.md", heading="目标", ordinal=0, text="目标片段", score=1.0)
+    first = RecordingRetriever(make_hits("a", 2) + [target])
+    second = RecordingRetriever(make_hits("b", 5) + [target])
+
+    without_pool = HybridRetriever([first, second], candidate_pool=1).search("问题", top_k=3)
+    with_pool = HybridRetriever([first, second], candidate_pool=3).search("问题", top_k=3)
+
+    def keys(hits):
+        return [(hit.source, hit.ordinal) for hit in hits]
+
+    assert ("g.md", 0) not in keys(without_pool)
+    assert keys(with_pool)[0] == ("g.md", 0)

@@ -161,16 +161,31 @@ class KeywordRetriever:
 
 
 class HybridRetriever:
-    """向量 + 关键词，用 RRF 融合名次。任一检索器没命中都不影响另一个。"""
+    """向量 + 关键词，用 RRF 融合名次。任一检索器没命中都不影响另一个。
 
-    def __init__(self, retrievers: Sequence[Retriever], rrf_k: int = 60) -> None:
+    注意 candidate_pool：每个通道先多取 top_k * candidate_pool 条候选，
+    融合之后再截回 top_k。如果只让每个通道取 top_k 条，某个通道排在第 k 位
+    的结果会在融合前就被丢掉——评估里这种情况会让混合检索的召回率反而
+    低于单通道，等于白融合。
+    """
+
+    def __init__(
+        self,
+        retrievers: Sequence[Retriever],
+        rrf_k: int = 60,
+        candidate_pool: int = 3,
+    ) -> None:
         if not retrievers:
             raise ValueError("至少需要一个检索器")
+        if candidate_pool <= 0:
+            raise ValueError("candidate_pool 必须大于 0")
         self.retrievers = list(retrievers)
         self.rrf_k = rrf_k
+        self.candidate_pool = candidate_pool
 
     def search(self, question: str, top_k: int) -> list[Hit]:
-        rankings = [retriever.search(question, top_k) for retriever in self.retrievers]
+        pool = top_k * self.candidate_pool
+        rankings = [retriever.search(question, pool) for retriever in self.retrievers]
         return reciprocal_rank_fusion(rankings, k=self.rrf_k)[:top_k]
 
 

@@ -60,14 +60,24 @@ class OpenAIEmbedder:
         model: str = "text-embedding-3-small",
         api_key: str | None = None,
         base_url: str | None = None,
+        batch_size: int = 64,
     ) -> None:
+        if batch_size <= 0:
+            raise ValueError("batch_size 必须大于 0")
         from openai import OpenAI
 
         self.model = model
         self._client = OpenAI(api_key=api_key, base_url=base_url)
+        self.batch_size = batch_size
 
     def embed(self, texts: Sequence[str]) -> list[list[float]]:
         if not texts:
             return []
-        response = self._client.embeddings.create(model=self.model, input=list(texts))
-        return [item.embedding for item in response.data]
+        vectors: list[list[float]] = []
+        for start in range(0, len(texts), self.batch_size):
+            batch = list(texts[start : start + self.batch_size])
+            response = self._client.embeddings.create(model=self.model, input=batch)
+            # 有些兼容实现不保证返回顺序，按 index 还原，否则向量会和文本错位
+            ordered = sorted(response.data, key=lambda item: item.index)
+            vectors.extend(item.embedding for item in ordered)
+        return vectors

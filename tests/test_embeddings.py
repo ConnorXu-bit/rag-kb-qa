@@ -1,8 +1,9 @@
 import math
+from types import SimpleNamespace
 
 import pytest
 
-from app.embeddings import FakeEmbedder
+from app.embeddings import FakeEmbedder, OpenAIEmbedder
 
 
 def cosine(left, right):
@@ -36,3 +37,34 @@ def test_empty_text_gets_zero_vector():
 def test_dimension_must_be_positive():
     with pytest.raises(ValueError):
         FakeEmbedder(dim=0)
+
+
+class StubEmbeddings:
+    """假的 embeddings 端点：记录每次收到的批量，并故意乱序返回。"""
+
+    def __init__(self):
+        self.calls: list[list[str]] = []
+
+    def create(self, model, input):
+        self.calls.append(list(input))
+        items = [
+            SimpleNamespace(index=index, embedding=[float(len(text)), 0.0])
+            for index, text in enumerate(input)
+        ]
+        return SimpleNamespace(data=list(reversed(items)))
+
+
+def test_openai_embedder_splits_batches_and_restores_order():
+    embedder = OpenAIEmbedder(api_key="test", batch_size=2)
+    stub = StubEmbeddings()
+    embedder._client = SimpleNamespace(embeddings=stub)
+
+    vectors = embedder.embed(["a", "bb", "ccc", "dddd", "eeeee"])
+
+    assert [len(call) for call in stub.calls] == [2, 2, 1]
+    assert vectors == [[1.0, 0.0], [2.0, 0.0], [3.0, 0.0], [4.0, 0.0], [5.0, 0.0]]
+
+
+def test_openai_embedder_rejects_non_positive_batch_size():
+    with pytest.raises(ValueError):
+        OpenAIEmbedder(api_key="test", batch_size=0)
